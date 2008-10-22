@@ -1,0 +1,21 @@
+h2. MultiDownload class
+
+To initialize and start the download:
+	self.urls = [NSMutableArray arrayWithObjects:
+					  @"http://maps.google.com/maps/geo?output=json&q=Lai+Chi+Kok,Hong+Kong",
+					  @"http://maps.google.com/maps/geo?output=json&q=Central,Hong+Kong",
+					  @"http://maps.google.com/maps/geo?output=json&q=Wan+Chai,Hong+Kong",
+					  nil];
+
+	self.downloads = [[MultipleDownload alloc] init];
+	self.downloads.delegate = self;
+	[downloads initFromUrls: urls];
+
+For processing the download, use MultiDownload delegates:
+ - (void) didFinishDownload:(NSNumber*)idx {
+	NSLog(@"%d download: %@", [idx intValue], [downloads dataAsStringAtIndex: [idx intValue]]);
+ }
+
+ - (void) didFinishAllDownload {
+	NSLog(@"Finished all download!");
+ }
