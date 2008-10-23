@@ -1,8 +1,9 @@
 //
 //  MultipleDownload.h
+//  NSURLConnectionWithClassTests
 //
-//  Created by Leon Ho on 14/10/2008.
-//  Copyright 2008 Stepcase Limited.
+//  Created by Leon on 14/10/2008.
+//  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -19,8 +20,11 @@
 @property (nonatomic,retain) NSMutableArray *urls;
 @property (nonatomic,retain) NSMutableDictionary *requests;
 @property (nonatomic,retain) NSMutableArray *receivedDatas;
+@property NSInteger finishCount;
+@property (retain) id delegate;
 
-- (void)initFromUrls:(NSArray *)aUrls;
+- (id)initWithUrls:(NSArray *)aUrls;
+- (void)requestWithUrls:(NSArray *)aUrls;
 - (NSData *)dataAtIndex:(NSInteger)idx;
 - (NSString *)dataAsStringAtIndex:(NSInteger)idx;
 - (void)setDelegate:(id)val;

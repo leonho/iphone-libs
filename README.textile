@@ -9,9 +9,8 @@ To initialize and start the download:
 					  @"http://maps.google.com/maps/geo?output=json&q=Wan+Chai,Hong+Kong",
 					  nil];
 
-	self.downloads = [[MultipleDownload alloc] init];
+	self.downloads = [[MultipleDownload alloc] initWithUrls: urls];
 	self.downloads.delegate = self;
-	[downloads initFromUrls: urls];
 </code></pre>
 
 For processing the download, use MultiDownload delegates:
@@ -22,4 +21,5 @@ For processing the download, use MultiDownload delegates:
 
  - (void) didFinishAllDownload {
 	NSLog(@"Finished all download!");
+	[downloads release];
  }

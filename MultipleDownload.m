@@ -1,8 +1,9 @@
 //
 //  MultipleDownload.m
+//  NSURLConnectionWithClassTests
 //
-//  Created by Leon Ho on 14/10/2008.
-//  Copyright 2008 Stepcase Limited.
+//  Created by Leon on 14/10/2008.
+//  Copyright 2008 __MyCompanyName__. All rights reserved.
 //
 
 #import "MultipleDownload.h"
@@ -10,14 +11,14 @@
 
 @implementation MultipleDownload
 
-@synthesize urls, requests, receivedDatas;
+@synthesize urls, requests, receivedDatas, finishCount;
 
 - init {
     if ((self = [super init])) {
 		self.urls = [[NSMutableArray alloc] init];
 		self.requests = [[NSMutableDictionary alloc] init];
 		self.receivedDatas = [[NSMutableArray alloc] init];
-		finishCount = 0;
+		self.finishCount = 0;
     }
     return self;
 }
@@ -41,14 +42,20 @@
 
 
 #pragma mark Methods
-- (void)initFromUrls:(NSArray *)aUrls {
+- (id)initWithUrls:(NSArray *)aUrls {
+    if ((self = [self init]))
+		[self requestWithUrls:aUrls];
+	return self;
+}
+
+- (void)requestWithUrls:(NSArray *)aUrls {
 	[urls addObjectsFromArray:aUrls];
-	
+
 	for(NSInteger i=0; i< [urls count]; i++){
 		NSMutableData *aData = [[NSMutableData alloc] init];
 		[receivedDatas addObject: aData];
 		[aData release];
-		
+
 		NSURLRequest *request = [[NSURLRequest alloc] 
 								 initWithURL: [NSURL URLWithString: [[urls objectAtIndex:i] stringByAddingPercentEscapesUsingEncoding: 4]]
 								 ];
@@ -60,7 +67,6 @@
 		[connection release];
 		[request release];	
 	}
-	
 }
 
 - (NSData *)dataAtIndex:(NSInteger)idx {
@@ -90,8 +96,6 @@
 	NSInteger i = [[requests objectForKey: [NSValue valueWithNonretainedObject:connection]] intValue];
 	finishCount++;
 	
-	if(delegate == nil) return;
-	
 	if ([delegate respondsToSelector:@selector(didFinishDownload:)])
         [delegate performSelector:@selector(didFinishDownload:) withObject: [NSNumber numberWithInt: i]];
     else
@@ -103,7 +107,7 @@
 	if(finishCount >= [urls count]){
 		if ([delegate respondsToSelector:@selector(didFinishAllDownload)])
 			[delegate didFinishAllDownload];
-		else	
+		else
 		{ 
 			[NSException raise:NSInternalInconsistencyException
 						format:@"Delegate doesn't respond to didFinishAllDownload"];
