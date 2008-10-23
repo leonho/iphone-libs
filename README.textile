@@ -15,6 +15,7 @@ To initialize and start the download:
 
 For processing the download, use MultiDownload delegates:
 
+<pre><code>
  - (void) didFinishDownload:(NSNumber*)idx {
 	NSLog(@"%d download: %@", [idx intValue], [downloads dataAsStringAtIndex: [idx intValue]]);
  }
@@ -23,3 +24,4 @@ For processing the download, use MultiDownload delegates:
 	NSLog(@"Finished all download!");
 	[downloads release];
  }
+</code></pre>
