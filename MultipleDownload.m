@@ -57,7 +57,9 @@
 		[aData release];
 
 		NSURLRequest *request = [[NSURLRequest alloc] 
-								 initWithURL: [NSURL URLWithString: [[urls objectAtIndex:i] stringByAddingPercentEscapesUsingEncoding: 4]]
+								 initWithURL: [NSURL URLWithString: [urls objectAtIndex:i]]
+								 cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
+								 timeoutInterval: 60
 								 ];
 		NSURLConnection *connection = [[NSURLConnection alloc]
 									   initWithRequest:request
