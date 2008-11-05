@@ -25,3 +25,18 @@ For processing the download, use MultiDownload delegates:
 	[downloads release];
  }
 </code></pre>
+
+h2. BlueBadge class
+
+It uses CoreGraphic to draw a blue badge similar to the mail count in Mail.app. To initialize:
+
+<pre><code>
+BlueBadge *blueBadge = [[BlueBadge alloc] initWithFrame: rect];
+[cell addSubview:blueBadge];
+[blueBadge release];
+</code></pre>
+
+When you need to update the count:
+<pre><code>
+[blueBadge drawWithCount: numOfMail];
+</code></pre>

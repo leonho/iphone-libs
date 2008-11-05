@@ -1,9 +1,7 @@
 //
 //  MultipleDownload.m
-//  NSURLConnectionWithClassTests
 //
-//  Created by Leon on 14/10/2008.
-//  Copyright 2008 __MyCompanyName__. All rights reserved.
+//  Copyright 2008 Stepcase Limited.
 //
 
 #import "MultipleDownload.h"
