@@ -13,10 +13,15 @@
 
 - init {
     if ((self = [super init])) {
-		self.urls = [[NSMutableArray alloc] init];
-		self.requests = [[NSMutableDictionary alloc] init];
-		self.receivedDatas = [[NSMutableArray alloc] init];
 		self.finishCount = 0;
+		NSMutableArray *array = [[NSMutableArray alloc] init];
+		self.receivedDatas = array;
+		[array release];
+		
+		NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+		self.requests = dict;
+		[dict release];
+
     }
     return self;
 }
@@ -24,7 +29,7 @@
 - (void)dealloc {
 	[urls release];
 	[requests release];
-	[receivedDatas release];
+	[receivedDatas autorelease];
     [super dealloc];
 }
 
@@ -47,17 +52,21 @@
 }
 
 - (void)requestWithUrls:(NSArray *)aUrls {
-	[urls addObjectsFromArray:aUrls];
 
+	[receivedDatas removeAllObjects];
+	[requests removeAllObjects];
+	[urls autorelease];
+	urls = [aUrls copy];
+	
 	for(NSInteger i=0; i< [urls count]; i++){
 		NSMutableData *aData = [[NSMutableData alloc] init];
 		[receivedDatas addObject: aData];
 		[aData release];
-
+		
 		NSURLRequest *request = [[NSURLRequest alloc] 
 								 initWithURL: [NSURL URLWithString: [urls objectAtIndex:i]]
 								 cachePolicy: NSURLRequestReloadIgnoringLocalCacheData
-								 timeoutInterval: 60
+								 timeoutInterval: 10
 								 ];
 		NSURLConnection *connection = [[NSURLConnection alloc]
 									   initWithRequest:request
@@ -76,7 +85,6 @@
 - (NSString *)dataAsStringAtIndex:(NSInteger)idx {
 	return [[[NSString alloc] initWithData:[receivedDatas objectAtIndex:idx] encoding:NSUTF8StringEncoding] autorelease];
 }
-
 
 #pragma mark NSURLConnection Delegates
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
@@ -98,22 +106,16 @@
 	
 	if ([delegate respondsToSelector:@selector(didFinishDownload:)])
         [delegate performSelector:@selector(didFinishDownload:) withObject: [NSNumber numberWithInt: i]];
-    else
-    { 
-        [NSException raise:NSInternalInconsistencyException
-					format:@"Delegate doesn't respond to didFinishDownload"];
-    }
-
+	
 	if(finishCount >= [urls count]){
 		if ([delegate respondsToSelector:@selector(didFinishAllDownload)])
 			[delegate didFinishAllDownload];
-		else
-		{ 
-			[NSException raise:NSInternalInconsistencyException
-						format:@"Delegate doesn't respond to didFinishAllDownload"];
-		}
 	}
 }
 
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+	if ([delegate respondsToSelector:@selector(didFailDownloadWithError:)])
+        [delegate performSelector:@selector(didFailDownloadWithError:) withObject: error];
+}
 
 @end
